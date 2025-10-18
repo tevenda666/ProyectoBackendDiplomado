@@ -1,11 +1,15 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import usuarioRoutes from './routes/usuario.routes';
+import sanitizeMiddleware from './middleware/sanitize.middleware';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+// sanitize inputs before routes
+app.use(sanitizeMiddleware);
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mydb';
@@ -13,6 +17,9 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mydb';
 app.get('/', (req, res) => {
     res.json({ message: 'Hola desde Express + TypeScript + MongoDB' });
 });
+
+// mount routes
+app.use('/api/usuarios', usuarioRoutes);
 
 async function tryConnect(retries = 5, delayMs = 2000) {
     for (let i = 0; i < retries; i++) {
