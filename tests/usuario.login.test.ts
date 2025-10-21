@@ -6,7 +6,7 @@ async function runValidatorsOnBody(body: any) {
     const req: any = { body, params: {}, query: {} };
     const chains = usuarioLoginValidator();
     for (const chain of chains) {
-        // @ts-ignore
+
         await chain.run(req);
     }
     return validationResult(req);

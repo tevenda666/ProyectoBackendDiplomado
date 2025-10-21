@@ -12,16 +12,14 @@ export const createContacto = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'usuarioId y nombre son requeridos' });
         }
 
-        // validate usuarioId is a valid ObjectId
         if (!mongoose.Types.ObjectId.isValid(usuarioId)) {
             return res.status(400).json({ message: 'usuarioId inválido' });
         }
 
-        // validate telefonos if provided
         if (telefonos) {
             if (!Array.isArray(telefonos)) return res.status(400).json({ message: 'telefonos debe ser un arreglo' });
             if (telefonos.length > 3) return res.status(400).json({ message: 'Máximo 3 teléfonos permitidos' });
-            // basic shape check
+
             for (const t of telefonos) {
                 if (!t || !t.tipo || !t.numero) return res.status(400).json({ message: 'Cada teléfono necesita tipo y numero' });
                 if (!['personal', 'oficina', 'emergencia'].includes(t.tipo)) return res.status(400).json({ message: 'Tipo de teléfono inválido' });
@@ -106,7 +104,6 @@ export const getContactos = async (req: Request, res: Response) => {
     try {
         const { usuarioId } = req.query as { usuarioId?: string };
 
-        // require usuarioId to avoid returning all contactos
         if (!usuarioId) return res.status(400).json({ message: 'usuarioId query es requerido' });
         if (!mongoose.Types.ObjectId.isValid(usuarioId)) return res.status(400).json({ message: 'usuarioId inválido' });
 

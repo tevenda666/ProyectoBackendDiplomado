@@ -48,7 +48,7 @@ export function warn(message: string, meta?: Record<string, any>) {
 export function error(err: unknown, meta?: Record<string, any>) {
     const message = err instanceof Error ? err.message : String(err);
     const stack = err instanceof Error && err.stack ? err.stack : undefined;
-    // eslint-disable-next-line no-console
+
     console.error(message, meta || '', stack || '');
     writeLog('error', message, { ...meta, stack });
 }

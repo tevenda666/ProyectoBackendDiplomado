@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 
-// Escapa caracteres peligrosos básicos para XSS
 function escapeHtml(str: string) {
     return str
         .replace(/&/g, '&amp;')
@@ -11,11 +10,11 @@ function escapeHtml(str: string) {
 }
 
 function sanitizeObject(obj: any, depth = 0): any {
-    if (depth > 10) return {}; // evitar DoS por profundidad
+    if (depth > 10) return {};
     if (Array.isArray(obj)) return obj.map((v: any) => sanitizeObject(v, depth + 1));
     if (obj === null || obj === undefined) return obj;
     if (typeof obj === 'string') {
-        // quitar scripts y escapar
+
         const withoutScripts = obj.replace(/<script.*?>.*?<\/script>/gi, '');
         return escapeHtml(withoutScripts);
     }
@@ -23,7 +22,7 @@ function sanitizeObject(obj: any, depth = 0): any {
 
     const clean: Record<string, any> = {};
     for (const key of Object.keys(obj)) {
-        // prevenir NoSQL injection y keys con puntos
+
         if (key.startsWith('$') || key.includes('.')) continue;
 
         const safeKey = escapeHtml(key);
@@ -38,8 +37,7 @@ export function sanitizeMiddleware(req: Request, _res: Response, next: NextFunct
         if (req.query) req.query = sanitizeObject(req.query);
         if (req.params) req.params = sanitizeObject(req.params);
     } catch (err) {
-        // en caso de error no bloquear la petición, registrar y continuar
-        // eslint-disable-next-line no-console
+
         console.warn('Sanitize middleware error:', err);
     }
     return next();

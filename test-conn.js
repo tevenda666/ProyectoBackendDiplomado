@@ -21,7 +21,6 @@ mongoose
   })
   .catch((err) => {
     console.error('Error al conectar a MongoDB:');
-    // Print friendly error + full error message
     console.error(err && err.message ? err.message : err);
     process.exit(1);
   });

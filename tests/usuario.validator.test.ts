@@ -7,8 +7,7 @@ async function runValidatorsOnBody(body: any) {
     const req: any = { body, params: {}, query: {} };
     const chains = usuarioCreateValidator();
     for (const chain of chains) {
-        // each chain has a run(req) method
-        // @ts-ignore
+
         await chain.run(req);
     }
     return validationResult(req);
@@ -20,7 +19,7 @@ describe('usuarioCreateValidator', () => {
         const result = await runValidatorsOnBody(bad);
         expect(result.isEmpty()).toBe(false);
         const errors = result.array();
-        // esperamos al menos 3 errores (nombre, apellido, email, password length)
+
         expect(errors.length).toBeGreaterThanOrEqual(3);
         const fields = errors.map((e) => (e as any).param);
         expect(fields).toContain('nombre');

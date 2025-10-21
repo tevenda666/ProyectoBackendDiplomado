@@ -14,7 +14,6 @@ export const createUsuario = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'nombre, apellido, email y password son requeridos' });
         }
 
-        // Check duplicate email
         const existing = await UsuarioModel.findOne({ email });
         if (existing) {
             return res.status(409).json({ message: 'El email ya está registrado' });
@@ -25,7 +24,6 @@ export const createUsuario = async (req: Request, res: Response) => {
 
         const usuario = await UsuarioModel.create({ nombre, apellido, email, password: hashed });
 
-        // Build response object typed as UsuarioResponse
         const usuarioResp: UsuarioResponse = {
             id: usuario._id,
             nombre: usuario.nombre,
