@@ -7,7 +7,6 @@ import { usuarioLoginValidator } from '../validators/usuario.validator'; // Impo
 
 const router = Router();
 
-// validation error handler
 function handleValidationErrors(req: any, res: any, next: any) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

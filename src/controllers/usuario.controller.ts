@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import UsuarioModel from '../models/usuario.model';
+import UsuarioResponse from '../types/usuario';
+import logger from '../utils/logger';
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
@@ -23,13 +25,17 @@ export const createUsuario = async (req: Request, res: Response) => {
 
         const usuario = await UsuarioModel.create({ nombre, apellido, email, password: hashed });
 
-        // Do not return password
-        const obj: any = usuario.toObject();
-        delete obj.password;
+        // Build response object typed as UsuarioResponse
+        const usuarioResp: UsuarioResponse = {
+            id: usuario._id,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            email: usuario.email,
+        };
 
-        return res.status(201).json(obj);
+        return res.status(201).json(usuarioResp);
     } catch (err) {
-        console.error(err);
+        logger.error(err, { route: 'createUsuario' });
         return res.status(500).json({ message: 'Error interno' });
     }
 };
@@ -45,11 +51,16 @@ export const loginUsuario = async (req: Request, res: Response) => {
         const match = await bcrypt.compare(password, usuario.password as string);
         if (!match) return res.status(401).json({ message: 'Credenciales inválidas' });
 
-        const obj: any = usuario.toObject();
-        delete obj.password;
-        return res.json(obj);
+        const usuarioResp: UsuarioResponse = {
+            id: usuario._id,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            email: usuario.email,
+        };
+
+        return res.json(usuarioResp);
     } catch (err) {
-        console.error(err);
+        logger.error(err, { route: 'loginUsuario' });
         return res.status(500).json({ message: 'Error interno' });
     }
 };
