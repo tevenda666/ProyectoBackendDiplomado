@@ -29,7 +29,6 @@ export const createContacto = async (req: Request, res: Response) => {
         const contacto = await ContactoModel.create({ usuarioId, nombre, telefonos: telefonos || [] });
 
         const resp: ContactoResponse = {
-            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero }))
@@ -47,8 +46,6 @@ export const addTelefono = async (req: Request, res: Response) => {
         const { contactoId } = req.params;
         const { tipo, numero } = req.body as ITelefono;
 
-        console.log(req.params);
-
         if (!contactoId || !mongoose.Types.ObjectId.isValid(contactoId)) {
             return res.status(400).json({ message: 'contactoId inválido' });
         }
@@ -63,7 +60,6 @@ export const addTelefono = async (req: Request, res: Response) => {
         await contacto.save();
 
         const resp: ContactoResponse = {
-            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero }))
@@ -87,7 +83,6 @@ export const getContacto = async (req: Request, res: Response) => {
         if (!contacto) return res.status(404).json({ message: 'Contacto no encontrado' });
 
         const resp: ContactoResponse = {
-            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero })),
@@ -110,7 +105,6 @@ export const getContactos = async (req: Request, res: Response) => {
         const contactos = await ContactoModel.find({ usuarioId });
 
         const resp = contactos.map((contacto) => ({
-            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero })),
@@ -123,9 +117,65 @@ export const getContactos = async (req: Request, res: Response) => {
     }
 };
 
+export const updateContacto = async (req: Request, res: Response) => {
+    try {
+        const { contactoId } = req.params;
+        const { nombre, telefonos } = req.body as { nombre?: string; telefonos?: ITelefono[] };
+
+        if (!contactoId || !mongoose.Types.ObjectId.isValid(contactoId)) {
+            return res.status(400).json({ message: 'contactoId inválido' });
+        }
+
+        const contacto = await ContactoModel.findById(contactoId);
+        if (!contacto) return res.status(404).json({ message: 'Contacto no encontrado' });
+
+        if (nombre) contacto.nombre = nombre;
+
+        if (telefonos) {
+            if (!Array.isArray(telefonos)) return res.status(400).json({ message: 'telefonos debe ser un arreglo' });
+            if (telefonos.length > 3) return res.status(400).json({ message: 'Máximo 3 teléfonos permitidos' });
+            contacto.telefonos = telefonos as any;
+        }
+
+        await contacto.save();
+
+        const resp: ContactoResponse = {
+            usuarioId: contacto.usuarioId.toString(),
+            nombre: contacto.nombre,
+            telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero })),
+        };
+
+        return res.json(resp);
+    } catch (err) {
+        logger.error(err, { route: 'updateContacto' });
+        return res.status(500).json({ message: 'Error interno' });
+    }
+};
+
+export const deleteContacto = async (req: Request, res: Response) => {
+    try {
+        const { contactoId } = req.params;
+        if (!contactoId || !mongoose.Types.ObjectId.isValid(contactoId)) {
+            return res.status(400).json({ message: 'contactoId inválido' });
+        }
+
+        const contacto = await ContactoModel.findById(contactoId);
+        if (!contacto) return res.status(404).json({ message: 'Contacto no encontrado' });
+
+        await ContactoModel.deleteOne({ _id: contactoId });
+
+        return res.status(204).send();
+    } catch (err) {
+        logger.error(err, { route: 'deleteContacto' });
+        return res.status(500).json({ message: 'Error interno' });
+    }
+};
+
 export default {
     createContacto,
     addTelefono,
     getContacto,
     getContactos,
+    updateContacto,
+    deleteContacto,
 };

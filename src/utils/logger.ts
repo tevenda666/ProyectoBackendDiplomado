@@ -4,12 +4,9 @@ import path from 'path';
 const LOG_DIR = path.resolve(process.cwd(), 'logs');
 const SERVICE_LOG = path.join(LOG_DIR, 'services.log');
 
-// ensure log directory exists
 try {
     fs.mkdirSync(LOG_DIR, { recursive: true });
 } catch (e) {
-    // if creation fails, fallback to console only
-    // eslint-disable-next-line no-console
     console.warn('No se pudo crear el directorio de logs:', e);
 }
 
@@ -23,24 +20,19 @@ function writeLog(level: LogLevel, message: string, meta?: Record<string, any>) 
         meta: meta || undefined,
     };
     const line = JSON.stringify(entry) + '\n';
-    // append asynchronously; ignore errors to avoid crashing the app
     fs.appendFile(SERVICE_LOG, line, (err) => {
         if (err) {
-            // eslint-disable-next-line no-console
             console.error('Error escribiendo log:', err);
         }
     });
 }
 
 export function info(message: string, meta?: Record<string, any>) {
-    // also mirror to console
-    // eslint-disable-next-line no-console
     console.log(message, meta || '');
     writeLog('info', message, meta);
 }
 
 export function warn(message: string, meta?: Record<string, any>) {
-    // eslint-disable-next-line no-console
     console.warn(message, meta || '');
     writeLog('warn', message, meta);
 }

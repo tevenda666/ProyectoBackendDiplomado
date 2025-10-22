@@ -8,7 +8,6 @@ export interface TelefonoResponse {
 }
 
 export interface ContactoResponse {
-    id: string;
     usuarioId: string;
     nombre: string;
     telefonos: TelefonoResponse[];

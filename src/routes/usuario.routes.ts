@@ -16,6 +16,6 @@ function handleValidationErrors(req: any, res: any, next: any) {
 }
 
 router.post('/crearUsuario', usuarioCreateValidator(), handleValidationErrors, createUsuario);
-router.post('/login', usuarioLoginValidator(), handleValidationErrors, loginUsuario); // Add the new login route
+router.post('/login', usuarioLoginValidator(), handleValidationErrors, loginUsuario);
 
 export default router;

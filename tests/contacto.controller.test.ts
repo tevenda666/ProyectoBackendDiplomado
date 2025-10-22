@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 const mockCreate = vi.fn();
 const mockFindById = vi.fn();
 const mockFind = vi.fn();
+const mockDeleteOne = vi.fn();
 
 vi.mock('../src/models/contacto.model', () => {
     return {
@@ -11,6 +12,7 @@ vi.mock('../src/models/contacto.model', () => {
             create: mockCreate,
             findById: mockFindById,
             find: mockFind,
+            deleteOne: mockDeleteOne,
         },
     };
 });
@@ -28,6 +30,7 @@ beforeEach(() => {
     mockCreate.mockReset();
     mockFindById.mockReset();
     mockFind.mockReset();
+    mockDeleteOne.mockReset();
 });
 
 describe('contacto.controller', () => {
@@ -171,5 +174,74 @@ describe('contacto.controller', () => {
         expect(Array.isArray(res.body)).toBe(true);
         expect(res.body.length).toBe(1);
         expect(res.body[0].usuarioId).toBe(usuarioId);
+    });
+
+    it('updateContacto - success updates and returns ContactoResponse', async () => {
+        const _id = new mongoose.Types.ObjectId().toString();
+        const usuarioId = new mongoose.Types.ObjectId().toString();
+        const existing = {
+            _id: new mongoose.Types.ObjectId(_id),
+            usuarioId: new mongoose.Types.ObjectId(usuarioId),
+            nombre: 'OldName',
+            telefonos: [],
+            save: vi.fn().mockResolvedValue(true),
+        } as any;
+
+        mockFindById.mockResolvedValue(existing);
+
+        const req: any = { params: { contactoId: _id }, body: { nombre: 'NewName', telefonos: [{ tipo: 'personal', numero: '123' }] } };
+        const res = mockRes();
+
+        const { updateContacto } = await import('../src/controllers/contacto.controller');
+
+        await updateContacto(req, res);
+
+        expect(existing.save).toHaveBeenCalled();
+        expect(res.body.nombre).toBe('NewName');
+        expect(res.body.telefonos.length).toBe(1);
+    });
+
+    it('updateContacto - returns 404 when not found', async () => {
+        const contactoId = new mongoose.Types.ObjectId().toString();
+        mockFindById.mockResolvedValue(null);
+
+        const req: any = { params: { contactoId }, body: { nombre: 'x' } };
+        const res = mockRes();
+
+        const { updateContacto } = await import('../src/controllers/contacto.controller');
+
+        await updateContacto(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(404);
+    });
+
+    it('deleteContacto - success returns 204', async () => {
+        const contactoId = new mongoose.Types.ObjectId().toString();
+        const existing = { _id: new mongoose.Types.ObjectId(contactoId) } as any;
+        mockFindById.mockResolvedValue(existing);
+        mockDeleteOne.mockResolvedValue({ deletedCount: 1 });
+
+        const req: any = { params: { contactoId } };
+        const res = mockRes();
+
+        const { deleteContacto } = await import('../src/controllers/contacto.controller');
+
+        await deleteContacto(req, res);
+
+        expect(res.statusCode).toBe(204);
+    });
+
+    it('deleteContacto - returns 404 when not found', async () => {
+        const contactoId = new mongoose.Types.ObjectId().toString();
+        mockFindById.mockResolvedValue(null);
+
+        const req: any = { params: { contactoId } };
+        const res = mockRes();
+
+        const { deleteContacto } = await import('../src/controllers/contacto.controller');
+
+        await deleteContacto(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(404);
     });
 });
