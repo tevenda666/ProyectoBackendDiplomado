@@ -12,6 +12,3 @@ Dockerfile
 .dockerignore
 *.md
 /.vscode
-*.ts
-src
-!dist
