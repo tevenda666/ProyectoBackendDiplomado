@@ -3,6 +3,7 @@
 Este proyecto usa Express, TypeScript y MongoDB (mongoose).
 
 Requisitos:
+
 - Node.js v22.17.0 (según indicado)
 - MongoDB (local o remoto)
 
