@@ -13,6 +13,7 @@ function mockRes() {
     const res: any = {};
     res.status = vi.fn().mockImplementation((code: number) => { res.statusCode = code; return res; });
     res.json = vi.fn().mockImplementation((body: any) => { res.body = body; return res; });
+    res.send = vi.fn().mockImplementation((body?: any) => { if (body !== undefined) res.body = body; return res; });
     return res;
 }
 

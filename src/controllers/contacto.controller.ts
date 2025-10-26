@@ -28,7 +28,8 @@ export const createContacto = async (req: Request, res: Response) => {
 
         const contacto = await ContactoModel.create({ usuarioId, nombre, telefonos: telefonos || [] });
 
-        const resp: ContactoResponse = {
+        const resp: ContactoResponse & { id: string } = {
+            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero }))
@@ -59,7 +60,8 @@ export const addTelefono = async (req: Request, res: Response) => {
         contacto.telefonos.push({ tipo, numero });
         await contacto.save();
 
-        const resp: ContactoResponse = {
+        const resp: ContactoResponse & { id: string } = {
+            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero }))
@@ -82,7 +84,8 @@ export const getContacto = async (req: Request, res: Response) => {
         const contacto = await ContactoModel.findById(contactoId);
         if (!contacto) return res.status(404).json({ message: 'Contacto no encontrado' });
 
-        const resp: ContactoResponse = {
+        const resp: ContactoResponse & { id: string } = {
+            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero })),
@@ -105,10 +108,11 @@ export const getContactos = async (req: Request, res: Response) => {
         const contactos = await ContactoModel.find({ usuarioId });
 
         const resp = contactos.map((contacto) => ({
+            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero })),
-        } as ContactoResponse));
+        } as ContactoResponse & { id: string }));
 
         return res.json(resp);
     } catch (err) {
@@ -139,7 +143,8 @@ export const updateContacto = async (req: Request, res: Response) => {
 
         await contacto.save();
 
-        const resp: ContactoResponse = {
+        const resp: ContactoResponse & { id: string } = {
+            id: contacto._id.toString(),
             usuarioId: contacto.usuarioId.toString(),
             nombre: contacto.nombre,
             telefonos: contacto.telefonos.map((t) => ({ tipo: t.tipo, numero: t.numero })),
