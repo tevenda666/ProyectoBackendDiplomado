@@ -1,23 +1,13 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import mongoose from 'mongoose';
 
+import ContactoModel from '../src/models/contacto.model';
+import { createContacto, addTelefono, getContacto, getContactos } from '../src/controllers/contacto.controller';
+
 const mockCreate = vi.fn();
 const mockFindById = vi.fn();
 const mockFind = vi.fn();
 const mockDeleteOne = vi.fn();
-
-vi.mock('../src/models/contacto.model', () => {
-    return {
-        default: {
-            create: mockCreate,
-            findById: mockFindById,
-            find: mockFind,
-            deleteOne: mockDeleteOne,
-        },
-    };
-});
-
-import { createContacto, addTelefono, getContacto, getContactos } from '../src/controllers/contacto.controller';
 
 function mockRes() {
     const res: any = {};
@@ -27,6 +17,12 @@ function mockRes() {
 }
 
 beforeEach(() => {
+    // assign mock implementations to the real model methods
+    (ContactoModel as any).create = mockCreate;
+    (ContactoModel as any).findById = mockFindById;
+    (ContactoModel as any).find = mockFind;
+    (ContactoModel as any).deleteOne = mockDeleteOne;
+
     mockCreate.mockReset();
     mockFindById.mockReset();
     mockFind.mockReset();

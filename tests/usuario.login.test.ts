@@ -18,7 +18,7 @@ describe('usuarioLoginValidator', () => {
         const result = await runValidatorsOnBody(bad);
         expect(result.isEmpty()).toBe(false);
         const errors = result.array();
-        const fields = errors.map((e) => (e as any).param);
+        const fields = errors.map((e) => ((e as any).param ?? (e as any).path));
         expect(fields).toContain('email');
         expect(fields).toContain('password');
     });

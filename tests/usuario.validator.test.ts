@@ -21,7 +21,7 @@ describe('usuarioCreateValidator', () => {
         const errors = result.array();
 
         expect(errors.length).toBeGreaterThanOrEqual(3);
-        const fields = errors.map((e) => (e as any).param);
+        const fields = errors.map((e) => ((e as any).param ?? (e as any).path));
         expect(fields).toContain('nombre');
         expect(fields).toContain('apellido');
         expect(fields).toContain('email');
