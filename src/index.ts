@@ -14,6 +14,8 @@ app.use(sanitizeMiddleware);
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mydb';
 
+console.log('MONGO_URI:', MONGO_URI); // Log the MONGO_URI for debugging
+
 app.get('/', (req, res) => {
     res.json({ message: 'Hola desde Express + TypeScript + MongoDB' });
 });
