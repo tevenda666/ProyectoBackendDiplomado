@@ -1,23 +1,30 @@
 # ProyectoBackendDiplomado
 
-Este proyecto usa Express, TypeScript y MongoDB (mongoose).
+API REST en Node + TypeScript para gestionar Usuarios y Contactos (los Contactos pueden tener uno o más teléfonos).
 
-Requisitos:
+Resumen
 
-- Node.js v22.17.0 (según indicado)
+- Backend con Express + TypeScript + Mongoose (MongoDB).
+- Validación con express-validator, sanitización y logging básico a `logs/services.log`.
+- Tests con Vitest.
+- Docker multi-stage y GitHub Actions para build/push a GitHub Container Registry (GHCR).
+
+Requisitos
+
+- Node.js (recomendado LTS reciente)
 - MongoDB (local o remoto)
 
-Instalación (PowerShell):
+Instalación (PowerShell)
 
 ```powershell
-# instalar dependencias
+# instalar dependencias (usa npm ci en CI)
 npm install
 
 # crear archivo .env basado en .env.example y ajustar MONGO_URI
 copy .env.example .env
 ```
 
-Comandos útiles (PowerShell):
+Comandos útiles (PowerShell)
 
 ```powershell
 # modo desarrollo (recarga automática)
@@ -38,6 +45,11 @@ npm run format
 
 Nota: si usas Windows PowerShell y el comando `copy` no funciona, usa `cp` o copia el contenido manualmente.
 
-Archivo de ejemplo para variables de entorno: `.env.example`.
+Variables de entorno
 
-Servidor de ejemplo en `src/index.ts`.
+- Usa `.env` para desarrollo. No incluyas `.env` en el repositorio ni en la imagen Docker.
+- Variables comunes: `MONGO_URI`, `JWT_SECRET`, `BCRYPT_SALT_ROUNDS`.
+
+Servidor
+
+- El arranque principal está en `src/index.ts`.

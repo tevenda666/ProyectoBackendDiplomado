@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import ContactoModel, { IContactoDocument, ITelefono } from '../models/contacto.model';
+import ContactoModel, { ITelefono } from '../models/contacto.model';
 import ContactoResponse from '../types/contacto';
 import logger from '../utils/logger';
 

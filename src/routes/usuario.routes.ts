@@ -2,8 +2,8 @@ import { Router } from 'express';
 import { validationResult } from 'express-validator';
 import { createUsuario } from '../controllers/usuario.controller';
 import { usuarioCreateValidator } from '../validators/usuario.validator';
-import { loginUsuario } from '../controllers/usuario.controller'; // Import the loginUsuario controller
-import { usuarioLoginValidator } from '../validators/usuario.validator'; // Import the usuarioLoginValidator
+import { loginUsuario } from '../controllers/usuario.controller';
+import { usuarioLoginValidator } from '../validators/usuario.validator';
 
 const router = Router();
 

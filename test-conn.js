@@ -1,5 +1,3 @@
-// test-conn.js
-// Simple script to test connection to MongoDB using MONGO_URI from .env
 require('dotenv').config();
 const mongoose = require('mongoose');
 

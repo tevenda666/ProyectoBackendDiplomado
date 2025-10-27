@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { validationResult } from 'express-validator';
 import { usuarioCreateValidator } from '../src/validators/usuario.validator';
 
-// Helper to run validation chains on a fake request object
 async function runValidatorsOnBody(body: any) {
     const req: any = { body, params: {}, query: {} };
     const chains = usuarioCreateValidator();

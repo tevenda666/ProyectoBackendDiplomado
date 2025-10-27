@@ -18,7 +18,6 @@ function mockRes() {
 }
 
 beforeEach(() => {
-    // assign mock implementations to the real model methods
     (ContactoModel as any).create = mockCreate;
     (ContactoModel as any).findById = mockFindById;
     (ContactoModel as any).find = mockFind;

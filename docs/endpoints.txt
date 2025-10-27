@@ -1,0 +1,180 @@
+Base URL: https://phonewebservices.onrender.com
+
+---
+
+Usuarios
+1) Crear usuario
+   - Método: POST
+   - Endpoint: /api/usuarios/crearUsuario
+   - Headers:
+       Content-Type: application/json
+   - Request body (JSON):
+     {
+       "nombre": "Juan",
+       "apellido": "Pérez",
+       "email": "juan@example.com",
+       "password": "Secret123"
+     }
+   - Respuesta (201):
+     {
+       "id": "64f...",
+       "nombre": "Juan",
+       "apellido": "Pérez",
+       "email": "juan@example.com"
+     }
+   - Errores comunes:
+     - 400 Bad Request: campos faltantes o inválidos
+     - 409 Conflict: email ya registrado
+
+2) Login de usuario
+   - Método: POST
+   - Endpoint: /api/usuarios/login
+   - Headers:
+       Content-Type: application/json
+   - Request body (JSON):
+     {
+       "email": "juan@example.com",
+       "password": "Secret123"
+     }
+   - Respuesta (200):
+     {
+       "id": "64f...",
+       "nombre": "Juan",
+       "apellido": "Pérez",
+       "email": "juan@example.com"
+     }
+   - Errores comunes:
+     - 400 Bad Request: falta email o password
+     - 401 Unauthorized: credenciales inválidas
+
+---
+
+Contactos
+1) Crear contacto
+   - Método: POST
+   - Endpoint: /api/contactos/create
+   - Headers:
+       Content-Type: application/json
+   - Request body (JSON):
+     {
+       "usuarioId": "64f...",   // ObjectId del usuario (string)
+       "nombre": "Ana",
+       "telefonos": [
+         { "tipo": "personal", "numero": "3001112222" }
+       ]
+     }
+   - Respuesta (201):
+     {
+       "id": "64f...",
+       "usuarioId": "64f...",
+       "nombre": "Ana",
+       "telefonos": [ { "tipo": "personal", "numero": "3001112222" } ]
+     }
+   - Errores comunes:
+     - 400 Bad Request: usuarioId o nombre ausentes / telefonos inválidos
+
+2) Agregar teléfono a contacto
+   - Método: POST
+   - Endpoint: /api/contactos/:contactoId/telefonos
+   - Headers:
+       Content-Type: application/json
+   - URL example: /api/contactos/64f.../telefonos
+   - Request body (JSON):
+     {
+       "tipo": "oficina", // 'personal' | 'oficina' | 'emergencia'
+       "numero": "3003334444"
+     }
+   - Respuesta (200):
+     {
+       "id": "64f...",
+       "usuarioId": "64f...",
+       "nombre": "Luis",
+       "telefonos": [
+         { "tipo": "personal", "numero": "3001112222" },
+         { "tipo": "oficina", "numero": "3003334444" }
+       ]
+     }
+   - Errores comunes:
+     - 400 Bad Request: contactoId inválido o cuerpo inválido
+     - 404 Not Found: contacto no encontrado
+     - 400 Bad Request: no se pueden agregar más de 3 teléfonos
+
+3) Obtener un contacto
+   - Método: GET
+   - Endpoint: /api/contactos/:contactoId
+   - URL example: /api/contactos/64f...
+   - Respuesta (200):
+     {
+       "id": "64f...",
+       "usuarioId": "64f...",
+       "nombre": "GetTest",
+       "telefonos": [ { "tipo": "personal", "numero": "555" } ]
+     }
+   - Errores comunes:
+     - 400 Bad Request: contactoId inválido
+     - 404 Not Found: contacto no encontrado
+
+4) Listar contactos por usuario
+   - Método: GET
+   - Endpoint: /api/contactos?usuarioId=<usuarioId>
+   - Example: /api/contactos?usuarioId=64f...
+   - Respuesta (200):
+     [
+       {
+         "id": "64f...",
+         "usuarioId": "64f...",
+         "nombre": "ListTest",
+         "telefonos": []
+       }
+     ]
+   - Errores comunes:
+     - 400 Bad Request: usuarioId requerido o inválido
+
+5) Actualizar contacto
+   - Método: PUT
+   - Endpoint: /api/contactos/:contactoId
+   - Request body (JSON) (parcial o completo):
+     {
+       "nombre": "NuevoNombre",
+       "telefonos": [ { "tipo": "personal", "numero": "123" } ]
+     }
+   - Respuesta (200): Contacto actualizado (igual formato que GET)
+   - Errores comunes:
+     - 400 Bad Request: contactoId inválido o telefonos mal formados
+     - 404 Not Found: contacto no encontrado
+
+6) Eliminar contacto
+   - Método: DELETE
+   - Endpoint: /api/contactos/:contactoId
+   - Respuesta (204): No content
+   - Errores comunes:
+     - 400 Bad Request: contactoId inválido
+     - 404 Not Found: contacto no encontrado
+
+---
+
+Ejemplos curl (rápido)
+
+# Crear usuario
+curl -X POST "https://phonewebservices.onrender.com/api/usuarios/crearUsuario" \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Juan","apellido":"Pérez","email":"juan@example.com","password":"Secret123"}'
+
+# Crear contacto
+curl -X POST "https://phonewebservices.onrender.com/api/contactos/" \
+  -H "Content-Type: application/json" \
+  -d '{"usuarioId":"64f...","nombre":"Ana","telefonos":[{"tipo":"personal","numero":"3001112222"}]}'
+
+Notas para Postman
+- Usar la Base URL como variable de entorno: {{baseUrl}} = https://phonewebservices.onrender.com
+- Crear colección con requests: POST /api/usuarios/crearUsuario, POST /api/usuarios/login, etc.
+- En cada request seleccionar Body -> raw -> JSON y pegar el JSON de ejemplo.
+- No se usa autenticación por token en los endpoints actuales; si en el futuro se añade JWT, añade header Authorization: Bearer <token>.
+
+Contactos de ayuda
+- Si recibes errores 401/403 al hacer pull de la imagen: autenticar docker con tu PAT (CR_PAT) y usar docker pull.
+- Para pruebas locales con Mongo, usa docker-compose con servicio mongo y ajusta MONGO_URI a mongodb://mongo:27017/mydb
+
+---
+
+Archivo generado automáticamente: lista de endpoints y ejemplos para consumir via Postman/curl

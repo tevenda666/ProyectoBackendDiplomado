@@ -13,7 +13,7 @@ function handleValidationErrors(req: any, res: any, next: any) {
     return next();
 }
 
-router.post('/', contactoCreateValidator(), handleValidationErrors, contactoController.createContacto);
+router.post('/create', contactoCreateValidator(), handleValidationErrors, contactoController.createContacto);
 router.post('/:contactoId/telefonos', telefonoAddValidator(), handleValidationErrors, contactoController.addTelefono);
 router.get('/:contactoId', contactoGetValidator(), handleValidationErrors, contactoController.getContacto);
 router.get('/', contactosListValidator(), handleValidationErrors, contactoController.getContactos);
