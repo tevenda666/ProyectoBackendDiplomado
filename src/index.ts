@@ -14,8 +14,6 @@ app.use(sanitizeMiddleware);
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/mydb';
 
-console.log('MONGO_URI:', MONGO_URI);
-
 app.get('/', (req, res) => {
     res.json({ message: 'API de Contactos' });
 });
@@ -28,7 +26,7 @@ async function tryConnect(retries = 5, delayMs = 2000) {
     for (let i = 0; i < retries; i++) {
         try {
             await mongoose.connect(MONGO_URI);
-            console.log('Conectado a MongoDB');
+            console.log('Conectado a DB');
             return;
         } catch (err) {
             console.warn(`Intento ${i + 1} fallido de conectar a MongoDB: ${err}`);
@@ -40,7 +38,7 @@ async function tryConnect(retries = 5, delayMs = 2000) {
 
 async function start() {
     app.listen(PORT, () => {
-        console.log(`Servidor escuchando en http://localhost:${PORT}`);
+        console.log(`Servidor Online`);
     });
 
     tryConnect().catch((err) => {
