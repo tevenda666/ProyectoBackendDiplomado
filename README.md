@@ -48,8 +48,9 @@ Nota: si usas Windows PowerShell y el comando `copy` no funciona, usa `cp` o cop
 Variables de entorno
 
 - Usa `.env` para desarrollo. No incluyas `.env` en el repositorio ni en la imagen Docker.
-- Variables comunes: `MONGO_URI`, `JWT_SECRET`, `BCRYPT_SALT_ROUNDS`.
+- Variables comunes: `MONGO_URI`, `BCRYPT_SALT_ROUNDS`.
 
 Servidor
 
 - El arranque principal está en `src/index.ts`.
+- Documentacion del proyecto en la carpeta docs
